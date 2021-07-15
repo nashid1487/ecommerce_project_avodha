@@ -11,6 +11,7 @@ def _cart_id(request):
         cart=request.session.create()
     return cart
 
+#to add an object into the cart
 def add_cart(request,product_id):
     product=Product.objects.get(id=product_id)
     try:
@@ -27,6 +28,8 @@ def add_cart(request,product_id):
         cart_item=CartItem.objects.create(product=product,quantity=1,cart=cart)
         cart_item.save()
     return redirect('cart:cart_detail')
+
+#to display the objects in the cart
 def cart_detail(request,total=0,count=0,cart_items=None):
     try:
         cart=Cart.objects.get(cart_id=_cart_id(request))
@@ -37,6 +40,8 @@ def cart_detail(request,total=0,count=0,cart_items=None):
     except ObjectDoesNotExist:
         pass
     return render(request,'cart.html',dict(cart_items=cart_items,total=total,count=count))
+
+#to remove the product in  iterative manner from the cart
 def cart_remove(request,product_id):
     cart=Cart.objects.get(cart_id=_cart_id(request))
     product=get_object_or_404(Product,id=product_id)
@@ -47,6 +52,8 @@ def cart_remove(request,product_id):
     else:
         cart_item.delete()
     return redirect('cart:cart_detail')
+
+#to completely remove the product from the cart
 def trash_item(request,product_id):
     cart = Cart.objects.get(cart_id=_cart_id(request))
     product = get_object_or_404(Product, id=product_id)
